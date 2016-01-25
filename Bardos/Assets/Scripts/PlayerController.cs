@@ -9,10 +9,16 @@ public class PlayerController : MonoBehaviour
 
 	private int JumpCount = 0;
 	private int AttackCount = 0;
+	private float Timer = 0f;
 	private Vector2 DirectionFacing;
 	private bool IsTouchingGround;
 	private bool IsAttacking;
 
+	void FixedUpdate()
+	{
+		RB.AddForce (DirectionFacing);
+	}
+	
 	// Update is called once per frame
 	void Update () 
 	{
@@ -21,20 +27,26 @@ public class PlayerController : MonoBehaviour
 
 		if (JumpCount == 0 && Input.GetButtonDown("Jump")) 
 		{
-			RB.AddForce(Vector2 * JumpHeight);
+			Debug.Log ("Jumping");
+			RB.AddForce(Vector2.up * JumpHeight);
 			JumpCount = 1;
 			IsTouchingGround = false;
 		}
 
 		if (AttackCount == 0 && IsTouchingGround == true && Input.GetMouseButtonDown(0)) 
 		{
-			RB.AddForce (transform.forward * MovementSpeed);     
-		}
-	}
+			while(Timer < 1)
+			{
+				Timer = Timer + Time.deltaTime;
+				Debug.Log ("Punching");
+				RB.velocity = new Vector2 (MovementLeftRight, 0);
+				AttackCount = 1;
+			}
 
-	void FixedUpdate()
-	{
-		RB.AddForce (DirectionFacing);
+			Debug.Log ("Punching Stopped");
+			AttackCount = 0;
+			Timer = 0;
+		}
 	}
 
 	void OnCollisionEnter2D(Collision2D other)
