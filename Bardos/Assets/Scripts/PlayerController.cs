@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
 	private IEnumerator AttackTimer()
 	{
 		IsAttacking = true;
-		yield return new WaitForSeconds (3);
+		yield return new WaitForSeconds (0.5f);
 		IsAttacking = false;
 	}
 
@@ -47,7 +47,17 @@ public class PlayerController : MonoBehaviour
 			RB.velocity = new Vector2 (MovementLeftRight, 0);
 			StartCoroutine(AttackTimer());
 			//Play punch animation
-			//Play punch sound
+			//Play punch sound?
+		}
+
+		//If player hasnt attacked and is not touching the ground on mouse click, player slams down until they touch the ground
+		if (IsAttacking == false && IsTouchingGround == false && Input.GetMouseButtonDown (0)) 
+		{
+			UnityEngine.Debug.Log ("Ground Pounding");
+			RB.velocity = new Vector3 (0, -1);
+			StartCoroutine(AttackTimer());
+			//Play ground pound animation
+			//Play ground pound sound?
 		}
 	}
 
@@ -64,6 +74,7 @@ public class PlayerController : MonoBehaviour
 			JumpCount = 0;
 			IsTouchingGround = true;
 			//Play landing sound		}
+		}
 
 		if (other.gameObject.CompareTag (Tags.Enemy) && IsAttacking == true) 
 		{
